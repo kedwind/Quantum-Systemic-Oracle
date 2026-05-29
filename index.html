@@ -505,16 +505,6 @@
     </div>
 
     <div class="dashboard">
-        <div style="position: absolute; top: 32px; right: 28px; text-align: right;">
-            <div class="stat-label" style="margin-bottom: 4px; color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">QAOA Gap vs Optimum <button class="info-dot" type="button" id="gap-info-btn" style="width:13px;height:13px;font-size:9px;margin-left:4px;">?</button></div>
-            <div class="stat-value" id="gap-display" style="font-size: 16px; font-weight: 600; color: var(--text-cyan); font-variant-numeric: tabular-nums;">-</div>
-            <div class="info-pop" id="gap-info-pop" style="text-align: left; width: 280px; right: 0; left: auto; top: calc(100% + 10px);">
-                <div class="info-pop-title">QAOA Gap vs Optimum</div>
-                <p>Measures how close the quantum optimizer (QAOA) came to the classical brute-force optimal portfolio. A near-zero gap means it recovered optimal-quality answers.</p>
-                <p>Discussed further in the <strong>"How QAOA compares (the "gap")"</strong> section lower on the page.</p>
-            </div>
-        </div>
-
         <div class="score-title">Quantum Systemic Risk Score</div>
         <div class="regime-display-main" id="regime-text-main">NEUTRAL</div>
         <div class="score-display-main" id="total-score-main">0.00%</div>
@@ -530,6 +520,15 @@
         </div>
         <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
             <div class="sliders-grid" id="sliders-container" style="text-align: left;"></div>
+        </div>
+        <div style="position: relative; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); text-align: left;">
+            <div class="stat-label" style="margin-bottom: 4px; color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">QAOA Gap vs Optimum <button class="info-dot" type="button" id="gap-info-btn" style="width:13px;height:13px;font-size:9px;margin-left:4px;">?</button></div>
+            <div class="stat-value" id="gap-display" style="font-size: 16px; font-weight: 600; color: var(--text-cyan); font-variant-numeric: tabular-nums;">-</div>
+            <div class="info-pop" id="gap-info-pop" style="text-align: left; width: 280px; left: 0; right: auto; top: calc(100% + 10px);">
+                <div class="info-pop-title">QAOA Gap vs Optimum</div>
+                <p>Measures how close the quantum optimizer (QAOA) came to the classical brute-force optimal portfolio. A near-zero gap means it recovered optimal-quality answers.</p>
+                <p>Discussed further in the <strong>"How QAOA compares (the "gap")"</strong> section lower on the page.</p>
+            </div>
         </div>
     </div>
 
