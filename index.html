@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Systemic Oracle - Crypto Risk - IonQ Forte Hardware</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-body: #0a0a0f;
+            --bg-container: #12121a;
+            --bg-panel: #1a1a24;
+            --bg-input: #0f0f14;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --text-cyan: #38bdf8;
+            --accent-blue: #3b82f6;
+            --accent-violet: #8b5cf6;
+            --calm: #10b981;
+            --neutral: #f59e0b;
+            --stressed: #f97316;
+            --crisis: #ef4444;
+            --track-gray: #3f3f46;
+            --track-active: #fafafa;
+            --border: #27272a;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at top, #1a1a2e 0%, var(--bg-body) 55%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 32px 16px 48px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--bg-container);
+            border: 1px solid var(--border);
+            padding: 36px;
+            border-radius: 16px;
+            max-width: 960px;
+            width: 100%;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.35);
+        }
+
+        .header-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .variant-badge {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(59,130,246,0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(59,130,246,0.35);
+        }
+        .variant-badge.qollab { background: rgba(139,92,246,0.15); color: var(--accent-violet); border-color: rgba(139,92,246,0.35); }
+        .variant-badge.forte36 { background: rgba(16,185,129,0.12); color: var(--calm); border-color: rgba(16,185,129,0.35); }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .meta-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+        }
+        .meta-card .label { color: var(--text-muted); margin-bottom: 4px; }
+        .meta-card .value { font-family: 'JetBrains Mono', monospace; font-size: 11px; word-break: break-all; }
+
+        .executive-summary {
+            background: rgba(59,130,246,0.06);
+            border: 1px solid rgba(59,130,246,0.2);
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.65;
+            color: var(--text-muted);
+        }
+        .executive-summary strong { color: var(--text-main); }
+        .snapshot-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: #000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--accent-blue);
+            font-size: 11px;
+        }
+        .ts-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .ts-chip {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 11px;
+        }
+        .ts-chip .ts-k { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+        .ts-chip .ts-v { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-blue); }
+        .portfolio-explainer {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+        .portfolio-explainer p { margin: 0 0 8px; }
+        .portfolio-explainer p:last-child { margin-bottom: 0; }
+        .portfolio-explainer strong { color: var(--text-main); }
+        .portfolio-explainer sup { font-size: 9px; }
+
+        .dashboard {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 28px 24px;
+            background: linear-gradient(180deg, var(--bg-panel) 0%, rgba(26,26,36,0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            position: relative;
+        }
+        .regime-display-main {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+        }
+        .score-display-main {
+            font-size: 52px;
+            font-weight: 700;
+            margin: 8px 0 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .score-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+        .progress-bar-container {
+            width: 100%;
+            height: 14px;
+            background: var(--track-gray);
+            border-radius: 7px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.35s ease, background-color 0.35s ease;
+            border-radius: 7px;
+        }
+        .markers {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color { width: 10px; height: 10px; border-radius: 2px; }
+
+        .slider-section, .portfolio-section, .data-sources-section, .glossary-section,
+        .paste-section, .hardware-section {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-size: 15px;
+            margin: 0 0 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .slider-header-stats {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 18px;
+            margin-bottom: 24px;
+            text-align: center;
+            gap: 16px;
+        }
+        .stat-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-value { font-size: 20px; font-weight: 600; color: var(--text-cyan); font-variant-numeric: tabular-nums; }
+
+        .sliders-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 32px;
+            row-gap: 20px;
+        }
+        .slider-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; position: relative; }
+        .slider-label { font-size: 12px; width: 168px; flex-shrink: 0; line-height: 1.35; }
+        .slider-label span { color: #71717a; }
+        .slider-container { flex-grow: 1; }
+        .slider-value-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            width: 52px;
+            text-align: center;
+            flex-shrink: 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type="range"]::-webkit-slider-runnable-track { height: 3px; cursor: pointer; border-radius: 2px; }
+        input[type="range"]::-webkit-slider-thumb {
+            height: 16px; width: 5px; border-radius: 2px;
+            background: #fff; cursor: pointer; -webkit-appearance: none; margin-top: -7px;
+        }
+
+        .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .portfolio-box {
+            background: rgba(0,0,0,0.25);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .portfolio-box .label { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .recommended-assets {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            color: var(--accent-blue);
+            line-height: 1.5;
+        }
+        .recommended-assets.classical { color: var(--text-muted); font-size: 14px; }
+
+        .action-list { display: flex; flex-direction: column; gap: 8px; }
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+        .action-row.in-qaoa { border-color: rgba(59,130,246,0.25); }
+        .action-tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            background: rgba(59,130,246,0.2);
+            color: var(--accent-blue);
+        }
+        .action-buy { color: var(--calm); font-weight: 700; }
+        .action-accumulate { color: var(--accent-blue); font-weight: 700; }
+        .action-hold { color: var(--neutral); font-weight: 700; }
+        .action-watch { color: var(--text-muted); font-weight: 600; }
+        .action-avoid { color: var(--stressed); font-weight: 700; }
+        .action-exit { color: var(--crisis); font-weight: 700; }
+
+        .glossary-list { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+        .glossary-list dt { color: var(--text-main); font-weight: 600; display: inline; }
+        .glossary-list dd { display: inline; margin: 0 0 8px 0; }
+        .glossary-note {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+        .glossary-note p { margin: 0 0 8px; }
+        .glossary-note p:last-child { margin-bottom: 0; }
+        .glossary-note strong { color: var(--text-main); }
+
+        .ds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; font-size: 13px; color: var(--text-muted); }
+        .ds-col h3 { font-size: 12px; color: var(--text-main); margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .ds-col ul { list-style: none; padding: 0; margin: 0; }
+        .ds-col li { margin-bottom: 6px; padding-left: 12px; position: relative; }
+        .ds-col li::before { content: "•"; color: var(--accent-blue); position: absolute; left: 0; }
+
+        .hw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .hw-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+        .hw-card .label { font-size: 11px; color: var(--text-muted); }
+        .hw-card .value {
+            font-size: 12px;
+            line-height: 1.35;
+            font-weight: 600;
+            margin-top: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .paste-section textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            resize: vertical;
+        }
+        .paste-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .paste-actions button {
+            background: var(--accent-violet);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .paste-actions button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+        .paste-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+        .paste-status { font-size: 12px; margin-top: 10px; color: var(--calm); }
+
+        .legal-disclaimer {
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: #71717a;
+            text-align: center;
+            line-height: 1.65;
+        }
+        .legal-disclaimer strong { color: #a1a1aa; }
+        .summary-section { margin-top: 16px; }
+        .summary-section:first-child { margin-top: 0; }
+        .summary-heading {
+            margin: 0 0 6px;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        .score-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .score-explainer {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            line-height: 1.65;
+            color: var(--text-muted);
+        }
+        .score-explainer strong { color: var(--text-main); }
+        .info-dot {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            margin-left: 6px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            vertical-align: middle;
+        }
+        .info-dot:hover { color: var(--text-main); border-color: var(--accent-blue); }
+        .info-pop {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 30;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.55;
+            color: var(--text-muted);
+            box-shadow: 0 12px 30px rgba(0,0,0,.45);
+        }
+        .info-pop.open { display: block; }
+        .info-pop p { margin: 0 0 8px; }
+        .info-pop p:last-child { margin-bottom: 0; }
+        .info-pop-title { color: var(--text-main); font-weight: 700; margin-bottom: 6px; font-size: 12.5px; }
+        .info-pop .info-k { color: var(--text-main); font-weight: 600; }
+        .info-pop .info-src { color: var(--text-muted); opacity: .85; }
+        .info-pop a { color: var(--accent-blue); text-decoration: none; }
+        .info-pop a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .sliders-grid, .portfolio-grid, .ds-grid { grid-template-columns: 1fr; }
+            .score-display-main { font-size: 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-row">
+        <h1>Quantum Systemic Oracle - Crypto Risk<br><span style="font-size:14px;font-weight:500;color:var(--text-muted)">Daily crypto systemic-risk score - <span id="title-suffix">IonQ Forte Hardware</span></span></h1>
+        <span class="variant-badge" id="variant-badge">forte36</span>
+    </div>
+
+    <div class="meta-grid" id="meta-grid"></div>
+
+    <div class="executive-summary">
+        <section class="summary-section">
+            <h2 class="summary-heading">Goal</h2>
+            Distill many noisy crypto-market signals into one daily, tamper-evident, on-chain
+            number - a "how stressed is the crypto market right now?" oracle that smart contracts,
+            dashboards, and risk systems can consume. This reading covers an
+            <span id="cohort-count">8</span>-asset crypto cohort
+            (<span id="cohort-list">BTC, ETH, BNB, XRP, SOL, DOGE, ADA, LINK</span>), scored 0-10,000 BPS
+            and packaged for Chainlink-style oracle publication
+            (<code id="schema-ver">qrs-3.0.0</code>).
+        </section>
+        <section class="summary-section">
+            <h2 class="summary-heading">Market Signals</h2>
+            Live momentum, volatility, breadth, stablecoin-peg, leverage/funding, liquidity and
+            macro inputs are captured in one snapshot and blended, by weight, into the headline
+            index. A higher index means a more stressed regime. The same primitives are
+            asset-class agnostic: each signal (implied vol, funding, breadth, TVL/liquidity) and
+            the QAOA risk core can be re-pointed at equities, FX, commodities, or tokenized RWAs
+            by swapping the underlying feeds - this instance is scoped to crypto.
+        </section>
+        <section class="summary-section">
+            <h2 class="summary-heading">Quantum Stack</h2>
+            A QAOA portfolio optimizer (14-qubit, p=2) runs on IonQ to pick the lowest-risk held
+            cohort; how close it lands to the classical optimum (the "gap") becomes a
+            solution-quality signal that feeds the index and sets confidence. The final score is
+            hashed and written to the Chainlink publish manifest.
+        </section>
+        <br>
+        Move the sliders below to stress-test how the index responds to each signal.
+        <div class="ts-row">
+            <span class="ts-chip"><span class="ts-k">Market signals</span>
+                <span class="ts-v" id="market-ts">05/29/2026 18:51 UTC</span></span>
+            <span class="ts-chip" title="Wall-clock from job submit to result - includes device queue wait + circuit execution">
+                <span class="ts-k">Quantum run · took 14m 21s (queue + exec)</span>
+                <span class="ts-v" id="quantum-ts">05/29/2026 20:39 UTC</span></span>
+            <span class="ts-chip"><span class="ts-k">Published</span>
+                <span class="ts-v" id="publish-ts">05/29/2026 20:24 UTC</span></span>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div style="position: absolute; top: 32px; right: 28px; text-align: right;">
+            <div class="stat-label" style="margin-bottom: 4px; color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">QAOA Gap vs Optimum <button class="info-dot" type="button" id="gap-info-btn" style="width:13px;height:13px;font-size:9px;margin-left:4px;">?</button></div>
+            <div class="stat-value" id="gap-display" style="font-size: 16px; font-weight: 600; color: var(--text-cyan); font-variant-numeric: tabular-nums;">-</div>
+            <div class="info-pop" id="gap-info-pop" style="text-align: left; width: 280px; right: 0; left: auto; top: calc(100% + 10px);">
+                <div class="info-pop-title">QAOA Gap vs Optimum</div>
+                <p>Measures how close the quantum optimizer (QAOA) came to the classical brute-force optimal portfolio. A near-zero gap means it recovered optimal-quality answers.</p>
+                <p>Discussed further in the <strong>"How QAOA compares (the "gap")"</strong> section lower on the page.</p>
+            </div>
+        </div>
+
+        <div class="score-title">Quantum Systemic Risk Score</div>
+        <div class="regime-display-main" id="regime-text-main">NEUTRAL</div>
+        <div class="score-display-main" id="total-score-main">0.00%</div>
+        <div class="progress-bar-container"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="markers">
+            <span>0% Calm</span><span>25%</span><span>50%</span><span>75%</span><span>100% Crisis</span>
+        </div>
+        <div class="legend" style="margin-top: 24px; margin-bottom: 0; background: transparent; border: none; padding: 0;">
+            <div class="legend-item"><div class="legend-color" style="background:var(--calm)"></div> <span style="color:var(--calm)">Calm (&lt;25%)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:var(--neutral)"></div> <span style="color:var(--neutral)">Neutral (25-50%)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:var(--stressed)"></div> <span style="color:var(--stressed)">Stressed (50-75%)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:var(--crisis)"></div> <span style="color:var(--crisis)">Crisis (≥75%)</span></div>
+        </div>
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+            <div class="sliders-grid" id="sliders-container" style="text-align: left;"></div>
+        </div>
+    </div>
+
+    <div class="score-explainer">
+        <section class="summary-section">
+            <h2 class="summary-heading">What this score means</h2>
+            A single 0-100% reading of how stressed the <strong>crypto cohort (of 8 measured assets)</strong> is
+            right now: 0% = calm, 100% = crisis. The colored band above
+            (Calm / Neutral / Stressed / Crisis) is the headline regime that downstream consumers act on.
+        </section>
+        <section class="summary-section">
+            <h2 class="summary-heading">How it's calculated</h2>
+            It is a <strong>weighted blend of nine signals</strong> - the sliders above. Each signal
+            is normalized to 0-100 and multiplied by its weight; the weighted sum is the index. Eight
+            are classical market signals (implied volatility, volatility trend, cross-asset correlation,
+            sentiment, funding crowding, prediction-market uncertainty, DeFi stress, stablecoin
+            dominance). A higher reading on any one pushes the score up by its weight - hover the
+            <span class="info-dot" style="position:static;display:inline-flex">?</span> on each slider
+            for what it means, how it's compiled, and its data source.
+        </section>
+        <section class="summary-section">
+            <h2 class="summary-heading">Where the quantum computer comes in</h2>
+            The ninth signal, <strong>QAOA solution quality</strong>, is produced by a quantum optimizer
+            (QAOA) running on IonQ. It searches for the lowest-risk basket and measures how close it lands
+            to the provably-optimal one (the "gap") plus how concentrated its samples are. A clean,
+            near-optimal quantum result <em>lowers</em> this term; a noisy or far-from-optimal one
+            <em>raises</em> it. It carries a deliberately small <strong>5% weight</strong>, so the
+            published number never hinges on quantum-solver perfection while still folding a genuine
+            quantum measurement into the index. As QPUs scale (e.g. IonQ Tempo), the same routine extends
+            to far larger cohorts a classical search could never enumerate.
+        </section>
+        <section class="summary-section">
+            <h2 class="summary-heading">How it's used on-chain</h2>
+            The final integer is hashed and published to a <strong>Chainlink-style AggregatorV3 oracle</strong>.
+            Smart contracts read it as a market-stress primitive - adjusting collateral ratios, gating
+            deposits, throttling leverage, triggering kill-switches or vault deleveraging, and resolving
+            prediction markets - so any on-chain protocol can react to system-wide risk automatically,
+            without trusting an off-chain API.
+        </section>
+    </div>
+
+
+    <div class="portfolio-section">
+        <h2>Quantum Portfolio &amp; Investment Outlook</h2>
+        <div class="portfolio-grid">
+            <div>
+                <div class="portfolio-box">
+                    <div class="label">QAOA Recommended Portfolio</div>
+                    <div class="recommended-assets" id="qaoa-portfolio">-</div>
+                </div>
+                <div class="portfolio-box" style="margin-top:12px">
+                    <div class="label">Classical Optimum (brute-force)</div>
+                    <div class="recommended-assets classical" id="classical-portfolio">-</div>
+                </div>
+            </div>
+            <div>
+                <div style="font-size:12px;color:var(--text-main);margin-bottom:4px">Per-Asset Directives</div>
+                <div style="font-size:11px;color:#71717a;margin-bottom:10px;font-style:italic">Ranked by conviction (highest first)</div>
+                <div class="action-list" id="action-list"></div>
+            </div>
+        </div>
+        <div class="portfolio-explainer">
+            <p><strong>QAOA Recommended Portfolio</strong> - the lowest-risk set of assets to
+            hold that the quantum optimizer (QAOA running on IonQ) actually found and sampled.
+            This is the recommendation the oracle publishes. It can hold a slightly different
+            number of assets than the classical optimum below (for instance four names instead of
+            three). That is expected, not an error: this is a budget-dominated problem where many
+            baskets sit within a few percent of each other on cost (that spread is the gap shown
+            up top), so the quantum run settles on a near-optimal neighbor of the brute-force best,
+            sometimes carrying one extra, nearly cost-neutral asset, rather than reproducing the
+            exact same set.</p>
+            <p><strong>Classical Optimum (brute-force)</strong> - the provably best hold set,
+            found by <em>brute force</em>: exhaustively scoring every one of the
+            2<sup>N</sup> possible hold/skip combinations (2<sup>8</sup> = 256 for this
+            8-asset cohort) and keeping the lowest-cost one. It is the ground-truth benchmark,
+            but brute force only stays feasible because the cohort is small.</p>
+            <p><strong>How QAOA compares (the "gap")</strong> - for a small cohort the
+            brute-force optimum is unbeatable on cost, so QAOA's job is to <em>match</em> it.
+            The <strong>QAOA gap vs optimum</strong> (shown above) measures how close it came;
+            a near-zero gap means the quantum run recovered optimal-quality answers. QAOA's
+            real advantage is scale: brute force explodes as 2<sup>N</sup> (≈10<sup>18</sup>
+            combinations at just 60 assets*) and quickly becomes impossible, while QAOA stays
+            tractable - so it is the path to large cohorts a classical search could never
+            enumerate.</p>
+            <p><strong>*What 60 assets needs on hardware</strong> - this encoding uses only
+            <em>N + 6</em> qubits (N asset-decision + 6 global-witness), so a 60-asset book is
+            ≈<strong>66 logical qubits</strong>, not 60. That is within reach of IonQ's upcoming
+            <strong>Tempo</strong> (100 physical qubits, #AQ 64, 99.9% two-qubit fidelity).
+            Crucially, the binding limit here is two-qubit-gate <em>error</em>, not qubit count:
+            Tempo's ≈10× lower gate error vs Forte widens the usable two-qubit-gate envelope by
+            roughly the same factor (Forte's today is ≈90 gates), so the deeper, fully-coupled
+            circuit a ~60-asset QAOA requires would stay <em>structured</em> where Forte flattens
+            toward uniform. Fittingly, #AQ 64 (≈2<sup>64</sup> usable states) lands right at the
+            ≈10<sup>18</sup>-combination scale this 60-asset problem reaches - so a ~66-qubit
+            Tempo run is the natural home for a cohort this size. At its full 100-qubit width the
+            same <em>N + 6</em> encoding tops out around <strong>≈94 assets</strong> (100 − 6
+            witnesses) - a cohort whose ≈2<sup>94</sup> (≈10<sup>28</sup>) combinations are
+            hopelessly beyond any classical brute force. <span style="opacity:.7">(Order-of-magnitude
+            estimate; actual capacity depends on circuit depth, coupling, and error mitigation.)</span></p>
+        </div>
+    </div>
+
+    
+
+    <div class="glossary-section">
+        <h2>Action Glossary</h2>
+        <dl class="glossary-list" id="action-glossary"></dl>
+        <div class="glossary-note">
+            <p><strong>How these are determined.</strong> Every asset gets an action from two
+            inputs: whether the QAOA optimizer placed it in the recommended hold basket, and a small
+            directional signal score. The score sums three live signals - the asset's 30-day price
+            z-score (oversold adds points, overbought subtracts), the Polymarket bull-minus-bear
+            skew (net-bullish adds, net-bearish subtracts), and the OKX perpetual funding rate
+            (crowded longs subtract, negative funding adds).</p>
+            <p>That score is then read against basket membership. For assets QAOA <strong>picked to
+            hold</strong>: a strongly positive score is <strong>BUY</strong> (signals align), a
+            flat-to-positive score is <strong>ACCUMULATE</strong>, and a negative score is
+            <strong>HOLD</strong> (stay at target weight, do not add). For assets it did
+            <strong>not</strong> pick: a strongly negative score is <strong>EXIT</strong>, a
+            flat-to-negative score is <strong>AVOID</strong>, and a positive score is
+            <strong>WATCH</strong> (bullish, but excluded by the diversification / budget math so it
+            is not held this run).</p>
+            <p>Actions describe a target state and do not depend on what you currently hold - net
+            them against your existing positions. Like everything here, they are experimental
+            research outputs, not financial advice.</p>
+        </div>
+    </div>
+
+    
+    <div class="hardware-section" id="hardware-section">
+        <h2>Hardware Run Diagnostics</h2>
+        <div class="hw-grid" id="hw-grid"></div>
+    </div>
+
+
+    <div class="data-sources-section">
+        <h2>Data Sources &amp; Circuit</h2>
+        <div class="ds-grid">
+            <div class="ds-col">
+                <h3>Assets (<span id="ds-asset-n">8</span>)</h3>
+                <ul id="ds-assets"></ul>
+            </div>
+            <div class="ds-col">
+                <h3>Market Signals</h3>
+                <ul class="ds-signal-list">
+                    <li>Deribit DVOL (BTC/ETH implied vol) <button class="info-dot" type="button" data-pop="ds-info-0" aria-label="About Deribit">?</button><div class="info-pop" id="ds-info-0"><div class="info-pop-title">Deribit</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://www.deribit.com" target="_blank" rel="noopener">www.deribit.com</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://docs.deribit.com/" target="_blank" rel="noopener">docs.deribit.com/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free. Public market-data endpoints (e.g. public/get_volatility_index_data) need no account or key; throttled per-IP and unauthenticated callers are limited more strictly, so cache and poll gently.</p></div></li>
+                    <li>Polymarket bull/bear probabilities <button class="info-dot" type="button" data-pop="ds-info-1" aria-label="About Polymarket">?</button><div class="info-pop" id="ds-info-1"><div class="info-pop-title">Polymarket</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://polymarket.com" target="_blank" rel="noopener">polymarket.com</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://docs.polymarket.com/" target="_blank" rel="noopener">docs.polymarket.com/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free, no key for read-only market data (Gamma API). General limit ~4,000 req/10s; the /events endpoint ~500 req/10s.</p></div></li>
+                    <li>OKX perpetual funding &amp; OI <button class="info-dot" type="button" data-pop="ds-info-2" aria-label="About OKX">?</button><div class="info-pop" id="ds-info-2"><div class="info-pop-title">OKX</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://www.okx.com" target="_blank" rel="noopener">www.okx.com</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://www.okx.com/docs-v5/en/" target="_blank" rel="noopener">www.okx.com/docs-v5/en/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free. Public market-data endpoints (funding-rate, open-interest) need no key; rate-limited per-IP per endpoint. Note: OKX is unavailable to US users.</p></div></li>
+                    <li>CoinGecko price &amp; correlation <button class="info-dot" type="button" data-pop="ds-info-3" aria-label="About CoinGecko">?</button><div class="info-pop" id="ds-info-3"><div class="info-pop-title">CoinGecko</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://www.coingecko.com" target="_blank" rel="noopener">www.coingecko.com</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://docs.coingecko.com/" target="_blank" rel="noopener">docs.coingecko.com/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free Demo plan: 10,000 calls/month, 30 calls/min, needs a free API key. Attribution to CoinGecko is required on the free tier.</p></div></li>
+                    <li>DeFiLlama TVL stress <button class="info-dot" type="button" data-pop="ds-info-4" aria-label="About DeFiLlama">?</button><div class="info-pop" id="ds-info-4"><div class="info-pop-title">DeFiLlama</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://defillama.com" target="_blank" rel="noopener">defillama.com</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://api-docs.defillama.com/" target="_blank" rel="noopener">api-docs.defillama.com/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free open API (api.llama.fi), no key, standard per-IP rate limit. Their terms ask you not to scrape/resell for commercial use outside the official API; credit DeFiLlama as the source.</p></div></li>
+                    <li>Stablecoin dominance <button class="info-dot" type="button" data-pop="ds-info-5" aria-label="About CoinGecko">?</button><div class="info-pop" id="ds-info-5"><div class="info-pop-title">CoinGecko</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://www.coingecko.com" target="_blank" rel="noopener">www.coingecko.com</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://docs.coingecko.com/" target="_blank" rel="noopener">docs.coingecko.com/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free Demo plan: 10,000 calls/month, 30 calls/min, needs a free API key. Attribution to CoinGecko is required on the free tier.</p></div></li>
+                    <li>Fear &amp; Greed sentiment <button class="info-dot" type="button" data-pop="ds-info-6" aria-label="About Alternative.me (Crypto Fear &amp; Greed Index)">?</button><div class="info-pop" id="ds-info-6"><div class="info-pop-title">Alternative.me (Crypto Fear &amp; Greed Index)</div><p class="info-src"><span class="info-k">Website:</span> <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" rel="noopener">alternative.me/crypto/fear-and-greed-index/</a></p><p class="info-src"><span class="info-k">API docs:</span> <a href="https://alternative.me/crypto/api/" target="_blank" rel="noopener">alternative.me/crypto/api/</a></p><p class="info-src"><span class="info-k">Free tier:</span> Free, no key (~60 requests/min). Personal and commercial use allowed; a visible 'Data from alternative.me' credit next to the value is requested.</p></div></li>
+                </ul>
+            </div>
+            <div class="ds-col">
+                <h3>Quantum Stack</h3>
+                <ul>
+                    <li><strong>QAOA</strong> p=<span id="p-layers">2</span></li>
+                    <li><strong>Circuit</strong> <span id="circuit-q">14</span> qubits</li>
+                    <li>8 decision + 6 global witnesses</li>
+                    <li>Lean witness bias (hardware-aligned)</li>
+                    <li>Qiskit + IonQ simulator / Forte QPU</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="legal-disclaimer"><strong>Disclaimer:</strong> This dashboard, risk scores, portfolio recommendations, and asset actions are experimental outputs from a research prototype that blends off-chain market data with quantum optimization simulations. They do NOT constitute financial, investment, trading, tax, or legal advice. Past simulated performance does not guarantee future results. Cryptocurrency markets are highly volatile and may result in total loss of capital. Do not make investment decisions based on this tool. The authors and contributors assume no liability for any losses incurred from use of this data.</div>
+</div>
+
+<script>
+const EMBEDDED = {
+  "variant": "forte36",
+  "title_suffix": "IonQ Forte Hardware",
+  "as_of_utc": "05/29/2026 20:24 UTC",
+  "snapshot_utc": "05/29/2026 18:51 UTC",
+  "market_signal_utc": "05/29/2026 18:51 UTC",
+  "quantum_run_utc": "05/29/2026 20:39 UTC",
+  "published_utc": "05/29/2026 20:24 UTC",
+  "quantum_run_duration": "14m 21s",
+  "schema_version": "qrs-3.0.0",
+  "methodology_version": "qaoa-14q-8asset-p2-v3",
+  "asset_cohort": [
+    "BTC",
+    "ETH",
+    "BNB",
+    "XRP",
+    "SOL",
+    "DOGE",
+    "ADA",
+    "LINK"
+  ],
+  "index_bps": 4392,
+  "index_pct": 43.92,
+  "regime": "neutral",
+  "components": [
+    {
+      "id": "implied_vol",
+      "name": "Implied Volatility",
+      "weight": 20.0,
+      "value": 3.24,
+      "info": {
+        "what": "Forward-looking volatility priced into BTC/ETH options - the market's 30-day annualized \"fear gauge.\" Higher means bigger expected price swings.",
+        "how": "Deribit DVOL for BTC and ETH, normalized to 0-100 and blended.",
+        "src": "Deribit DVOL (BTC, ETH).",
+        "provider": {
+          "name": "Deribit",
+          "site": "https://www.deribit.com",
+          "api": "https://docs.deribit.com/",
+          "cost": "Free. Public market-data endpoints (e.g. public/get_volatility_index_data) need no account or key; throttled per-IP and unauthenticated callers are limited more strictly, so cache and poll gently."
+        }
+      }
+    },
+    {
+      "id": "vol_trend",
+      "name": "Volatility Trend",
+      "weight": 5.0,
+      "value": 44.15,
+      "info": {
+        "what": "Whether implied volatility is rising or falling versus its recent baseline. A rising trend signals building stress even before prices move.",
+        "how": "Change in DVOL against a short trailing reference, mapped to 0-100.",
+        "src": "Deribit DVOL time series.",
+        "provider": {
+          "name": "Deribit",
+          "site": "https://www.deribit.com",
+          "api": "https://docs.deribit.com/",
+          "cost": "Free. Public market-data endpoints (e.g. public/get_volatility_index_data) need no account or key; throttled per-IP and unauthenticated callers are limited more strictly, so cache and poll gently."
+        }
+      }
+    },
+    {
+      "id": "cross_asset_correlation",
+      "name": "Cross-Asset Correlation",
+      "weight": 15.0,
+      "value": 41.27,
+      "info": {
+        "what": "How tightly the cohort moves together. High correlation means diversification breaks down and a sell-off hits everything at once.",
+        "how": "Average pairwise return correlation across the cohort, normalized to 0-100.",
+        "src": "CoinGecko price history.",
+        "provider": {
+          "name": "CoinGecko",
+          "site": "https://www.coingecko.com",
+          "api": "https://docs.coingecko.com/",
+          "cost": "Free Demo plan: 10,000 calls/month, 30 calls/min, needs a free API key. Attribution to CoinGecko is required on the free tier."
+        }
+      }
+    },
+    {
+      "id": "sentiment_extreme",
+      "name": "Sentiment Extreme",
+      "weight": 10.0,
+      "value": 54.0,
+      "info": {
+        "what": "How extreme crowd sentiment is. Both greed and fear extremes tend to precede reversals, so either end raises risk.",
+        "how": "Crypto Fear & Greed index folded so both extremes score high, normalized 0-100.",
+        "src": "Crypto Fear & Greed index.",
+        "provider": {
+          "name": "Alternative.me (Crypto Fear & Greed Index)",
+          "site": "https://alternative.me/crypto/fear-and-greed-index/",
+          "api": "https://alternative.me/crypto/api/",
+          "cost": "Free, no key (~60 requests/min). Personal and commercial use allowed; a visible 'Data from alternative.me' credit next to the value is requested."
+        }
+      }
+    },
+    {
+      "id": "funding_crowding",
+      "name": "Funding Crowding",
+      "weight": 15.0,
+      "value": 71.83,
+      "info": {
+        "what": "Crowded leverage in perpetual futures. Persistently high funding means one-sided positioning that can unwind violently.",
+        "how": "OKX perpetual funding rates and open interest, normalized to 0-100.",
+        "src": "OKX perpetuals (funding, open interest).",
+        "provider": {
+          "name": "OKX",
+          "site": "https://www.okx.com",
+          "api": "https://www.okx.com/docs-v5/en/",
+          "cost": "Free. Public market-data endpoints (funding-rate, open-interest) need no key; rate-limited per-IP per endpoint. Note: OKX is unavailable to US users."
+        }
+      }
+    },
+    {
+      "id": "prediction_market_uncertainty",
+      "name": "Prediction-Market Uncertainty",
+      "weight": 10.0,
+      "value": 30.67,
+      "info": {
+        "what": "Disagreement among real-money bettors about near-term outcomes. More disagreement means more genuine uncertainty about where the market goes next.",
+        "how": "Dispersion of Polymarket bull/bear scenario probabilities, normalized to 0-100.",
+        "src": "Polymarket scenario markets.",
+        "provider": {
+          "name": "Polymarket",
+          "site": "https://polymarket.com",
+          "api": "https://docs.polymarket.com/",
+          "cost": "Free, no key for read-only market data (Gamma API). General limit ~4,000 req/10s; the /events endpoint ~500 req/10s."
+        }
+      }
+    },
+    {
+      "id": "defi_stress",
+      "name": "DeFi Stress",
+      "weight": 10.0,
+      "value": 61.68,
+      "info": {
+        "what": "Stress in DeFi liquidity. Falling total value locked / liquidity flight raises systemic risk for on-chain protocols.",
+        "how": "DeFiLlama total-value-locked changes, normalized to 0-100.",
+        "src": "DeFiLlama TVL.",
+        "provider": {
+          "name": "DeFiLlama",
+          "site": "https://defillama.com",
+          "api": "https://api-docs.defillama.com/",
+          "cost": "Free open API (api.llama.fi), no key, standard per-IP rate limit. Their terms ask you not to scrape/resell for commercial use outside the official API; credit DeFiLlama as the source."
+        }
+      }
+    },
+    {
+      "id": "stablecoin_dominance",
+      "name": "Stablecoin Dominance",
+      "weight": 10.0,
+      "value": 64.59,
+      "info": {
+        "what": "Share of the market parked in stablecoins - a flight-to-safety gauge. Rising dominance means capital is hiding in cash rather than risk assets.",
+        "how": "Stablecoin market-cap share of total crypto market cap, normalized to 0-100.",
+        "src": "CoinGecko / stablecoin market caps.",
+        "provider": {
+          "name": "CoinGecko",
+          "site": "https://www.coingecko.com",
+          "api": "https://docs.coingecko.com/",
+          "cost": "Free Demo plan: 10,000 calls/month, 30 calls/min, needs a free API key. Attribution to CoinGecko is required on the free tier."
+        }
+      }
+    },
+    {
+      "id": "qaoa_solution_quality",
+      "name": "QAOA Solution Quality",
+      "weight": 5.0,
+      "value": 60.15,
+      "info": {
+        "what": "The quantum contribution. A QAOA optimizer on IonQ picks the lowest-risk basket; how cleanly it recovers the provably-optimal basket (gap + sampling concentration) becomes this signal. A near-optimal, well-concentrated quantum result lowers it; a noisy or far-from-optimal one raises it.",
+        "how": "This run's QAOA cost-gap vs the brute-force optimum plus concentration (lift over uniform), mapped to 0-100. Computed on the IonQ simulator daily and validated on IonQ Forte hardware. Deliberately small (5%) weight so the index never hinges on quantum-solver perfection.",
+        "src": "IonQ QAOA run (simulator / Forte QPU).",
+        "provider": {
+          "name": "IonQ (computed in-house, not a market feed)",
+          "site": "https://ionq.com",
+          "api": "https://docs.ionq.com/",
+          "cost": "This signal is produced by our own QAOA run, not pulled from a data vendor. The IonQ simulator is free for prototyping; Forte QPU hardware runs are metered / billable."
+        }
+      }
+    }
+  ],
+  "qaoa_held": [
+    "BTC",
+    "BNB",
+    "DOGE",
+    "ADA"
+  ],
+  "classical_held": [
+    "BTC",
+    "DOGE",
+    "ADA"
+  ],
+  "actions": [
+    {
+      "symbol": "ADA",
+      "name": "Cardano",
+      "action": "BUY",
+      "in_qaoa": true,
+      "target_weight_pct": 25.0,
+      "risk_bps": 2864
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "action": "HOLD",
+      "in_qaoa": true,
+      "target_weight_pct": 25.0,
+      "risk_bps": 3298
+    },
+    {
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "action": "HOLD",
+      "in_qaoa": true,
+      "target_weight_pct": 25.0,
+      "risk_bps": 2405
+    },
+    {
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "action": "HOLD",
+      "in_qaoa": true,
+      "target_weight_pct": 25.0,
+      "risk_bps": 2069
+    },
+    {
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "action": "AVOID",
+      "in_qaoa": false,
+      "target_weight_pct": 0.0,
+      "risk_bps": 3226
+    },
+    {
+      "symbol": "SOL",
+      "name": "Solana",
+      "action": "EXIT",
+      "in_qaoa": false,
+      "target_weight_pct": 0.0,
+      "risk_bps": 3224
+    },
+    {
+      "symbol": "XRP",
+      "name": "Ripple (XRP)",
+      "action": "EXIT",
+      "in_qaoa": false,
+      "target_weight_pct": 0.0,
+      "risk_bps": 3143
+    },
+    {
+      "symbol": "BNB",
+      "name": "BNB",
+      "action": "EXIT",
+      "in_qaoa": false,
+      "target_weight_pct": 0.0,
+      "risk_bps": 2474
+    }
+  ],
+  "backend": "ionq_qpu.forte-enterprise-1",
+  "job_id": "019e7569-92b2-76bb-b074-6e2eb3b7d986",
+  "shots": 4096,
+  "gap_pct": 3.377818585773809,
+  "circuit_qubits": 14,
+  "p_layers": 2,
+  "snapshot_hash": "0x3ad5924db53da2b551c476108d446679bc6b9c7f02c6ea208d5c1b8f2e567bb2",
+  "hardware": {
+    "source_file": "ionq_forte36_result.json",
+    "cohort_match": true,
+    "backend": "ionq_qpu.forte-enterprise-1",
+    "job_id": "019e7569-92b2-76bb-b074-6e2eb3b7d986",
+    "shots": 2500,
+    "qubits_logical": 14,
+    "two_q_gates": 56,
+    "layers": 1,
+    "lean": true,
+    "mitigation": true,
+    "modal_share_pct": 1.16,
+    "concentration_regime": "noise-limited (near-uniform; hardware gate error dominates)",
+    "raw_unique_bitstrings": 813,
+    "elapsed_seconds": 861.461
+  },
+  "qollab_paste_enabled": false,
+  "disclaimer": "This dashboard, risk scores, portfolio recommendations, and asset actions are experimental outputs from a research prototype that blends off-chain market data with quantum optimization simulations. They do NOT constitute financial, investment, trading, tax, or legal advice. Past simulated performance does not guarantee future results. Cryptocurrency markets are highly volatile and may result in total loss of capital. Do not make investment decisions based on this tool. The authors and contributors assume no liability for any losses incurred from use of this data."
+};
+const ACTION_CLASS = {
+    BUY: "action-buy", ACCUMULATE: "action-accumulate", HOLD: "action-hold",
+    WATCH: "action-watch", AVOID: "action-avoid", EXIT: "action-exit"
+};
+const GLOSSARY = [["BUY", "Enter today; directional signals and QAOA basket align."], ["ACCUMULATE", "Scale in over 3-5 sessions; in basket with mixed/neutral signals."], ["HOLD", "Maintain target weight; in basket but do not add."], ["WATCH", "Bullish signals but excluded by diversification math; monitor next run."], ["AVOID", "No exposure recommended; not in QAOA basket with neutral/bearish signals."], ["EXIT", "Sell any existing position; bearish signals dominate."]];
+
+let state = JSON.parse(JSON.stringify(EMBEDDED));
+let components = state.components.map(c => ({...c}));
+
+function regimeFromPct(total) {
+    if (total <= 25) return { upper: "CALM", title: "Calm", color: "var(--calm)" };
+    if (total <= 50) return { upper: "NEUTRAL", title: "Neutral", color: "var(--neutral)" };
+    if (total <= 75) return { upper: "STRESSED", title: "Stressed", color: "var(--stressed)" };
+    return { upper: "CRISIS", title: "Crisis", color: "var(--crisis)" };
+}
+
+function renderMeta() {
+    const badge = document.getElementById("variant-badge");
+    badge.textContent = state.variant;
+    badge.className = "variant-badge " + state.variant;
+
+    const items = [
+        ["Schema", state.schema_version],
+        ["Methodology", state.methodology_version],
+        ["Backend", state.backend || "-"],
+        ["Job ID", (state.job_id || "-").slice(0, 24) + (state.job_id && state.job_id.length > 24 ? "…" : "")],
+    ];
+    document.getElementById("meta-grid").innerHTML = items.map(([l,v]) =>
+        `<div class="meta-card"><div class="label">${l}</div><div class="value">${v}</div></div>`
+    ).join("");
+}
+
+function fmtDuration(s) {
+    s = Math.round(s);
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return m > 0 ? `${m}m ${String(sec).padStart(2, "0")}s` : `${sec}s`;
+}
+
+function renderHardware() {
+    const el = document.getElementById("hw-grid");
+    if (!el || !state.hardware) return;
+    const h = state.hardware;
+    const cards = [
+        ["Backend", h.backend], ["Job", (h.job_id || "").slice(0, 20)],
+        ["Shots", h.shots], ["Qubits", h.qubits_logical],
+        ["2Q gates", h.two_q_gates], ["p layers", h.layers],
+        ["Lean", h.lean ? "yes" : "no"], ["Mitigation", h.mitigation ? "yes" : "no"],
+        ["Cohort match", h.cohort_match === false ? "NO (stale)" : "yes"],
+        ["Source", h.source_file || "-"],
+        ["Modal share", h.modal_share_pct != null ? h.modal_share_pct + "%" : "-"],
+        ["Concentration", h.concentration_regime || "-"],
+        ["Unique strings", h.raw_unique_bitstrings],
+        ["Run time (queue+exec)", h.elapsed_seconds ? fmtDuration(h.elapsed_seconds) : "-"],
+    ];
+    el.innerHTML = cards.filter(([,v]) => v != null && v !== "").map(([l,v]) => {
+        const warn = (l === "Cohort match" && h.cohort_match === false);
+        return `<div class="hw-card"${warn ? ' style="border-color:var(--crisis)"' : ''}><div class="label">${l}</div><div class="value"${warn ? ' style="color:var(--crisis)"' : ''}>${v}</div></div>`;
+    }).join("");
+}
+
+function renderPortfolio() {
+    document.getElementById("qaoa-portfolio").textContent =
+        state.qaoa_held && state.qaoa_held.length ? JSON.stringify(state.qaoa_held) : "[] (cash / none)";
+    document.getElementById("classical-portfolio").textContent =
+        state.classical_held && state.classical_held.length ? JSON.stringify(state.classical_held) : "[]";
+    document.getElementById("gap-display").textContent =
+        state.gap_pct != null ? (state.gap_pct >= 0 ? "+" : "") + state.gap_pct.toFixed(2) + "%" : "-";
+
+    const heldSet = new Set(state.qaoa_held || []);
+    document.getElementById("action-list").innerHTML = (state.actions || []).map(a => {
+        const cls = ACTION_CLASS[a.action] || "action-watch";
+        const tag = heldSet.has(a.symbol) ? '<span class="action-tag">QAOA</span>' : "";
+        return `<div class="action-row${heldSet.has(a.symbol) ? " in-qaoa" : ""}">
+            <span>${a.name} (${a.symbol})${tag}</span>
+            <span class="${cls}">${a.action}</span></div>`;
+    }).join("");
+
+    document.getElementById("ds-assets").innerHTML = (state.asset_cohort || []).map(s =>
+        `<li>${ASSET_NAMES?.[s] || s} (${s})</li>`
+    ).join("");
+}
+
+const ASSET_NAMES = {"BTC": "Bitcoin", "ETH": "Ethereum", "BNB": "BNB", "XRP": "Ripple (XRP)", "SOL": "Solana", "DOGE": "Dogecoin", "ADA": "Cardano", "LINK": "Chainlink", "AVAX": "Avalanche", "TON": "Toncoin", "DOT": "Polkadot", "LTC": "Litecoin"};
+
+function renderGlossary() {
+    document.getElementById("action-glossary").innerHTML = GLOSSARY.map(([k,v]) =>
+        `<dt>${k}:</dt> <dd>${v}</dd><br>`
+    ).join("");
+}
+
+function calculateTotal() {
+    let total = 0;
+    components.forEach(c => { total += c.value * (c.weight / 100); });
+    const formatted = total.toFixed(2) + "%";
+    document.getElementById("total-score-main").textContent = formatted;
+    document.getElementById("progress-fill").style.width = total + "%";
+    const r = regimeFromPct(total);
+    document.getElementById("regime-text-main").textContent = r.upper;
+    document.getElementById("regime-text-main").style.color = r.color;
+    document.getElementById("total-score-main").style.color = r.color;
+    document.getElementById("progress-fill").style.backgroundColor = r.color;
+}
+
+function initSliders() {
+    const container = document.getElementById("sliders-container");
+    container.innerHTML = "";
+    components.forEach((comp, index) => {
+        const row = document.createElement("div");
+        row.className = "slider-row";
+        const info = comp.info || {};
+        const hasInfo = !!(info.what || info.how || info.src);
+        const dot = hasInfo
+            ? `<button class="info-dot" type="button" data-info="${index}" aria-label="About ${comp.name}">?</button>`
+            : "";
+        const pop = hasInfo
+            ? `<div class="info-pop" id="info-${index}">
+                   <div class="info-pop-title">${comp.name}</div>
+                   ${info.what ? `<p>${info.what}</p>` : ""}
+                   ${info.how ? `<p><span class="info-k">How it's compiled:</span> ${info.how}</p>` : ""}
+                   ${info.src ? `<p class="info-src"><span class="info-k">Source:</span> ${info.src}</p>` : ""}
+                   ${info.provider ? `<p class="info-src"><span class="info-k">Provider:</span> ${info.provider.name}${info.provider.site ? ` &middot; <a href="${info.provider.site}" target="_blank" rel="noopener">website</a>` : ""}${info.provider.api ? ` &middot; <a href="${info.provider.api}" target="_blank" rel="noopener">API docs</a>` : ""}</p>` : ""}
+                   ${info.provider && info.provider.cost ? `<p class="info-src"><span class="info-k">Cost / free tier:</span> ${info.provider.cost}</p>` : ""}
+               </div>`
+            : "";
+        row.innerHTML = `
+            <div class="slider-label">${comp.name} <span>(${comp.weight}%)</span>${dot}</div>
+            <div class="slider-container">
+                <input type="range" id="slider-${index}" min="0" max="100" step="0.1" value="${comp.value}">
+            </div>
+            <div class="slider-value-box" id="val-${index}">${comp.value}</div>${pop}`;
+        container.appendChild(row);
+        const slider = document.getElementById(`slider-${index}`);
+        const updateTrack = () => {
+            slider.style.background = `linear-gradient(to right, var(--track-active) ${slider.value}%, var(--track-gray) ${slider.value}%)`;
+        };
+        updateTrack();
+        slider.addEventListener("input", e => {
+            comp.value = parseFloat(e.target.value);
+            document.getElementById(`val-${index}`).textContent =
+                comp.value % 1 === 0 ? comp.value : comp.value.toFixed(1);
+            updateTrack();
+            calculateTotal();
+        });
+    });
+    document.querySelectorAll(".info-dot").forEach(btn => {
+        if (btn.dataset.bound === "1") return;
+        btn.dataset.bound = "1";
+        btn.addEventListener("click", e => {
+            e.stopPropagation();
+            const infoId = btn.dataset.pop
+                || (btn.id === "gap-info-btn" ? "gap-info-pop" : "info-" + btn.dataset.info);
+            const pop = document.getElementById(infoId);
+            if (!pop) return;
+            const isOpen = pop.classList.contains("open");
+            document.querySelectorAll(".info-pop.open").forEach(p => p.classList.remove("open"));
+            if (!isOpen) pop.classList.add("open");
+        });
+    });
+    calculateTotal();
+}
+
+document.addEventListener("click", () => {
+    document.querySelectorAll(".info-pop.open").forEach(p => p.classList.remove("open"));
+});
+
+function parseQollabPaste(text) {
+    const out = {};
+    let m = text.match(/\[QAOA recommendation\]\s*(\[[^\]]+\])\s+cost=(-?\d+\.?\d*)/);
+    if (m) out.qaoa_held = JSON.parse(m[1].replace(/'/g, '"'));
+    m = text.match(/\[Classical optimum\]\s*(\[[^\]]+\])\s+cost=(-?\d+\.?\d*)/);
+    if (m) out.classical_held = JSON.parse(m[1].replace(/'/g, '"'));
+    m = text.match(/\[Gap to optimum\]\s*([+-]?\d+\.?\d*)%/);
+    if (m) out.gap_pct = parseFloat(m[1]);
+    m = text.match(/Index \(this Qollab run\):\s*(\d+)/);
+    if (m) {
+        out.index_bps = parseInt(m[1], 10);
+        out.index_pct = out.index_bps / 100;
+    }
+    m = text.match(/qaoa_solution_quality\s+(\d+)/);
+    if (m) {
+        const bps = parseInt(m[1], 10);
+        const q = components.find(c => c.id === "qaoa_solution_quality");
+        if (q) q.value = bps / 100;
+    }
+    return out;
+}
+
+function applyQollabPaste() {
+    const text = document.getElementById("qollab-paste").value;
+    const parsed = parseQollabPaste(text);
+    if (!parsed.qaoa_held && !parsed.index_bps) {
+        document.getElementById("paste-status").textContent = "Could not parse Qollab output - check format.";
+        document.getElementById("paste-status").style.color = "var(--crisis)";
+        return;
+    }
+    if (parsed.qaoa_held) state.qaoa_held = parsed.qaoa_held;
+    if (parsed.classical_held) state.classical_held = parsed.classical_held;
+    if (parsed.gap_pct != null) state.gap_pct = parsed.gap_pct;
+    renderPortfolio();
+    calculateTotal();
+    document.getElementById("paste-status").textContent =
+        "Applied Qollab run" + (parsed.index_bps ? ` - index ${parsed.index_bps} BPS` : "") + ".";
+    document.getElementById("paste-status").style.color = "var(--calm)";
+}
+
+function resetQollab() {
+    state = JSON.parse(JSON.stringify(EMBEDDED));
+    components = state.components.map(c => ({...c}));
+    document.getElementById("qollab-paste").value = "";
+    document.getElementById("paste-status").textContent = "";
+    initSliders();
+    renderPortfolio();
+    renderMeta();
+}
+
+renderMeta();
+renderHardware();
+renderGlossary();
+renderPortfolio();
+initSliders();
+
+if (document.getElementById("apply-paste")) {
+    document.getElementById("apply-paste").addEventListener("click", applyQollabPaste);
+    document.getElementById("reset-paste").addEventListener("click", resetQollab);
+}
+</script>
+</body>
+</html>
